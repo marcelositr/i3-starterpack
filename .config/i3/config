@@ -13,7 +13,7 @@ exec --no-startup-id hsetroot -center ~/.wallpaper.png
 # exec --no-startup-id conky -c ~/.config/conky/conky.conf
 
 # start a terminal
-bindsym $super+Return exec i3-sensible-terminal
+bindsym $super+Return exec --no-startup-id i3-sensible-terminal
 
 # start dmenu (a program launcher)
 bindsym $super+d exec i3-dmenu-desktop --dmenu="dmenu -i -b \
@@ -25,6 +25,7 @@ bindsym Print exec scrot 'Cheese_%a-%d%b%y_%H.%M.png' -e 'xdg-open ~/$f'
 bindsym $super+l exec i3lock -i ~/.lock.png
 bindsym $super+w exec firefox
 bindsym $super+e exec thunar
+bindsym $super+Control+x exec xkill
 
 # change volume and brightness
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
@@ -83,21 +84,21 @@ bindsym $super+Shift+4 move container to workspace 4:4
 bindsym $super+Shift+5 move container to workspace 5:5
 bindsym $super+Shift+6 move container to workspace 6:6
 
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+# restart i3 inplace
 bindsym $super+BackSpace exec "i3-msg restart"
 
 # exit i3
 bindsym $super+q exec "i3-nagbar -t warning -m 'Really, exit?' \
 -b 'Yes' 'i3-msg exit'"
 
-# resize window (you can also use the mouse for that)
+# resize window
 mode "resize" {
 	bindsym Left resize shrink width 5 px or 5 ppt
 	bindsym Down resize grow height 5 px or 5 ppt
 	bindsym Up resize shrink height 5 px or 5 ppt
 	bindsym Right resize grow width 5 px or 5 ppt
 	bindsym Return mode "default"
-	}
+}
 bindsym $super+r mode "resize"
 
 # panel
@@ -109,15 +110,14 @@ bar {
 	strip_workspace_numbers yes
 
 	colors {
-	background #141c21
-	statusline #141c21
-	separator #141c21
+		background #141c21
+		statusline #141c21
+		separator #141c21
 
-	# cor das workspaces
-	focused_workspace #141c21 #2587cc #93a1a1
-	active_workspace #141c21 #2587cc #93a1a1
-	inactive_workspace #141c21 #141c21 #93a1a1
-	urgent_workspace #141c21 #d12f2c #93a1a1
+		focused_workspace #141c21 #2587cc #93a1a1
+		active_workspace #141c21 #2587cc #93a1a1
+		inactive_workspace #141c21 #141c21 #93a1a1
+		urgent_workspace #141c21 #d12f2c #93a1a1
 	}
 }
 
@@ -129,10 +129,14 @@ client.urgent #263640 #b08500 #93a1a1 #263640 #263640
 client.placeholder #263640 #b08500 #93a1a1 #263640 #263640
 client.background #263640
 
-# window rules, you can find the window class using xprop
+# window rules
 for_window [class=Eog|Sxiv|feh|mpv|Vlc|File-roller|Xarchiver] floating enable
 for_window [class=Eog|Sxiv|feh|mpv|Vlc|File-roller|Xarchiver] focus
 for_window [class=".*"] border pixel 8
+
+# **garante que qualquer terminal abre na workspace atual**
+for_window [class="(?i)Alacritty|URxvt|XTerm|Gnome-terminal|Kitty|Terminator"] move to workspace current
+
 hide_edge_borders smart
 gaps inner 12
 smart_gaps on

@@ -3,13 +3,18 @@ set $super Mod4
 set $alt Mod1
 
 # set font
-font pango:Inter 10, Ionicons 9
+font pango:Inter 10, Ionicons 10
+# font pango:Inter 8, Material Symbols Rounded 8
+# font pango:"Material Symbols Rounded" 8
+
 
 # use mouse+$super to drag floating windows to their wanted position
 floating_modifier $super
 
 # autostart
+exec --no-startup-id sh -c "sleep 5 && setxkbmap br abnt2"
 exec --no-startup-id hsetroot -center ~/.wallpaper.png
+
 # exec --no-startup-id conky -c ~/.config/conky/conky.conf
 
 # start a terminal
@@ -106,7 +111,7 @@ bar {
 	status_command i3status
 	position top
 	workspace_min_width 24
-	padding 2px 8px 2px 8px
+	padding 5px 5px 5px 5px
 	strip_workspace_numbers yes
 
 	colors {

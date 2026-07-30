@@ -3,34 +3,28 @@ set $super Mod4
 set $alt Mod1
 
 # set font
-font pango:Inter 10, Ionicons 10
-# font pango:Inter 8, Material Symbols Rounded 8
-# font pango:"Material Symbols Rounded" 8
-
+font pango:FontAwesome 9, IBM Plex Sans 9
 
 # use mouse+$super to drag floating windows to their wanted position
 floating_modifier $super
 
 # autostart
-exec --no-startup-id sh -c "sleep 5 && setxkbmap br abnt2"
-exec --no-startup-id hsetroot -center ~/.wallpaper.png
-
-# exec --no-startup-id conky -c ~/.config/conky/conky.conf
+exec --no-startup-id hsetroot -center ~/.local/share/wallpaper/.wallpaper.png
 
 # start a terminal
-bindsym $super+Return exec --no-startup-id i3-sensible-terminal
+bindsym $super+Return exec i3-sensible-terminal
 
 # start dmenu (a program launcher)
 bindsym $super+d exec i3-dmenu-desktop --dmenu="dmenu -i -b \
--fn 'Poppins:size=9' -nb '#141c21' -nf '#93a1a1' \
--sb '#2587cc' -sf '#141c21'"
+-fn 'IBM Plex Sans:size=9' -nb '#2E3440' -nf '#eceff4' \
+-sb '#4c566a' -sf '#eceff4'"
 
 # common apps keybinds
-bindsym Print exec scrot 'Cheese_%a-%d%b%y_%H.%M.png' -e 'xdg-open ~/$f'
-bindsym $super+l exec i3lock -i ~/.lock.png
+# bindsym Print exec scrot 'Cheese_%a-%d%b%y_%H.%M.png' -e 'xdg-open ~/$f'
+bindsym Print exec scrot '/home/marcelositr/print/Cheese_%a-%d%b%y_%H.%M.png' -e 'xdg-open $f'
+bindsym $super+l exec i3lock -i ~/.local/share/wallpaper/.lock.png
 bindsym $super+w exec firefox
 bindsym $super+e exec thunar
-bindsym $super+Control+x exec xkill
 
 # change volume and brightness
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
@@ -74,29 +68,37 @@ bindsym $super+Shift+space focus mode_toggle
 # switch to workspace
 bindsym $super+Control+Right workspace next
 bindsym $super+Control+Left workspace prev
-bindsym $super+1 workspace 1:1
-bindsym $super+2 workspace 2:2
-bindsym $super+3 workspace 3:3
-bindsym $super+4 workspace 4:4
-bindsym $super+5 workspace 5:5
-bindsym $super+6 workspace 6:6
+bindsym $super+1 workspace 1:
+bindsym $super+2 workspace 2:
+bindsym $super+3 workspace 3:
+bindsym $super+4 workspace 4:
+bindsym $super+5 workspace 5:
+bindsym $super+6 workspace 6:
+bindsym $super+7 workspace 7:
+bindsym $super+8 workspace 8:
+bindsym $super+9 workspace 9:
+bindsym $super+0 workspace 0:
 
 # move focused container to workspace
-bindsym $super+Shift+1 move container to workspace 1:1
-bindsym $super+Shift+2 move container to workspace 2:2
-bindsym $super+Shift+3 move container to workspace 3:3
-bindsym $super+Shift+4 move container to workspace 4:4
-bindsym $super+Shift+5 move container to workspace 5:5
-bindsym $super+Shift+6 move container to workspace 6:6
+bindsym $super+Shift+1 move container to workspace 1:
+bindsym $super+Shift+2 move container to workspace 2:
+bindsym $super+Shift+3 move container to workspace 3:
+bindsym $super+Shift+4 move container to workspace 4:
+bindsym $super+Shift+5 move container to workspace 5:
+bindsym $super+Shift+6 move container to workspace 6:
+bindsym $super+Shift+7 move container to workspace 7:
+bindsym $super+Shift+8 move container to workspace 8:
+bindsym $super+Shift+9 move container to workspace 9:
+bindsym $super+Shift+0 move container to workspace 0:
 
-# restart i3 inplace
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $super+BackSpace exec "i3-msg restart"
 
 # exit i3
 bindsym $super+q exec "i3-nagbar -t warning -m 'Really, exit?' \
 -b 'Yes' 'i3-msg exit'"
 
-# resize window
+# resize window (you can also use the mouse for that)
 mode "resize" {
 	bindsym Left resize shrink width 5 px or 5 ppt
 	bindsym Down resize grow height 5 px or 5 ppt
@@ -111,37 +113,34 @@ bar {
 	status_command i3status
 	position top
 	workspace_min_width 24
-	padding 5px 5px 5px 5px
+	padding 2px 8px 2px 8px
 	strip_workspace_numbers yes
 
 	colors {
-		background #141c21
-		statusline #141c21
-		separator #141c21
+	background #2e3440
+	statusline #eceff4
+	separator #2e3440
 
-		focused_workspace #141c21 #2587cc #93a1a1
-		active_workspace #141c21 #2587cc #93a1a1
-		inactive_workspace #141c21 #141c21 #93a1a1
-		urgent_workspace #141c21 #d12f2c #93a1a1
+	# colour of border, background, and text
+	focused_workspace #2E3440 #5E81AC #ECEFF4
+	active_workspace #2E3440 #4c566a #D8DEE9
+	inactive_workspace #2E3440 #2E3440 #4C566A
+	urgent_workspace #2E3440 #bf616a #ECEFF4
 	}
 }
 
-# cor das bordas das janelas
-client.focused #2587cc #263640 #93a1a1 #696ebf #2587cc
-client.focused_inactive #263640 #b08500 #93a1a1 #263640 #263640
-client.unfocused #263640 #b08500 #93a1a1 #263640 #263640
-client.urgent #263640 #b08500 #93a1a1 #263640 #263640
-client.placeholder #263640 #b08500 #93a1a1 #263640 #263640
-client.background #263640
+# colour of border, background, text, indicator, and child_border
+client.focused #5E81AC #3B4252 #ECEFF4 #88C0D0 #5E81AC
+client.focused_inactive #4C566A #3B4252 #D8DEE9 #4C566A #4C566A
+client.unfocused #4C566A #2E3440 #D8DEE9 #2E3440 #2E3440
+client.urgent #BF616A #BF616A #ECEFF4 #BF616A #BF616A
+client.placeholder #4C566A #2E3440 #D8DEE9 #4C566A #4C566A
+client.background #2E3440
 
-# window rules
+# window rules, you can find the window class using xprop
 for_window [class=Eog|Sxiv|feh|mpv|Vlc|File-roller|Xarchiver] floating enable
 for_window [class=Eog|Sxiv|feh|mpv|Vlc|File-roller|Xarchiver] focus
 for_window [class=".*"] border pixel 8
-
-# **garante que qualquer terminal abre na workspace atual**
-for_window [class="(?i)Alacritty|URxvt|XTerm|Gnome-terminal|Kitty|Terminator"] move to workspace current
-
 hide_edge_borders smart
 gaps inner 12
 smart_gaps on

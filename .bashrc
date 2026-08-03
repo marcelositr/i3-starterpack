@@ -225,3 +225,12 @@ build_prompt() {
 # Define o gatilho para a construção do prompt
 PROMPT_COMMAND=build_prompt
 #---------------------------- FIM-MOTOR PRINCIPAL -----------------------------<
+
+# Habilitando Bash Completion
+if ! shopt -oq posix; then
+    [[ -r /usr/share/bash-completion/bash_completion ]] &&
+        . /usr/share/bash-completion/bash_completion
+fi
+
+# Habilitando extras do literade para emacs elisp
+export PATH="$HOME/.config/emacs/bin:$PATH"

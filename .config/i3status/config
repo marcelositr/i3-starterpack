@@ -13,22 +13,22 @@ order += "volume master"
 order += "time"
 
 load {
-	format = "<span background='#bf616a' foreground='#2E3440'>    </span><span background='#4C566A'>  %5min Load  </span>"
+	format = "<span background='#bf616a' foreground='#2E3440'>    </span><span background='#4C566A'>  %5min Load  </span>"
 }
 
 cpu_temperature 0 {
 	format = "<span background='#d08770' foreground='#2E3440'>    </span><span background='#4C566A'>  %degrees °C  </span>"
-	path = "/sys/class/thermal/thermal_zone0/temp"
+	path = "/sys/class/thermal/thermal_zone2/temp"
 }
 
 wireless wlp3s0 {
 	format_up = "<span background='#ebcb8b' foreground='#2E3440'>    </span><span background='#4C566A'>  %essid  </span>"
-	format_down = "<span background='#ebcb8b' foreground='#2E3440'>    </span><span background='#4C566A'>  Disconnected  </span>"
+	format_down = "<span background='#ebcb8b' foreground='#2E3440'>  󰤮  </span><span background='#4C566A'>  Disconnected  </span>"
 }
 
 volume master {
 	format = "<span background='#a3be8c' foreground='#2E3440'>    </span><span background='#4C566A'>  %volume  </span>"
-	format_muted = "<span background='#a3be8c'>    </span><span background='#4C566A'>  Muted  </span>"
+	format_muted = "<span background='#a3be8c'>  󰝟  </span><span background='#4C566A'>  Muted  </span>"
 	device = "default"
 	mixer = "Master"
 	mixer_idx = 0

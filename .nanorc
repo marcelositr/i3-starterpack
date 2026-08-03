@@ -1,0 +1,25 @@
+set constantshow
+set smarthome
+set tabsize 4
+set tabstospaces
+set autoindent
+set trimblanks
+
+# Toggle with Alt+$
+set softwrap
+set atblanks
+
+# Toggle with Alt+X
+set nohelp
+
+# Toggle with Alt+M
+# set mouse
+
+# Toggle with Alt+#
+# set linenumbers
+
+# Toggle with F12
+set speller "aspell -x -c"
+
+# Minibar
+set minibar

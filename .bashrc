@@ -3,7 +3,7 @@
 # AUTOR             : Marcelo Trindade - @marcelositr - marcelost@riseup.net
 # DATA-DE-CRIAÇÃO   : 2026-03-24
 # PROGRAMA          : Marcelo Prompt Engine
-# VERSÃO            : 1.0 (Security & Clean Code Edition)
+# VERSÃO            : 1.2 (Security, Performance & Dynamic Alignment Edition)
 # PEQUENA-DESCRIÇÃO : Motor de prompt dinâmico com integração GPG-Agent,
 #                     Git, Containers e controle de tempo de execução.
 #------------------------------------------------------------------------------|
@@ -29,34 +29,31 @@ shopt -s checkwinsize
 if command -v gpgconf >/dev/null 2>&1; then
     export GPG_TTY=$(tty)
     export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-
-    # Atualiza o TTY da sessão atual no gpg-agent
-    gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
+    gpg-connect-agent --no-autostart updatestartuptty /bye >/dev/null 2>&1
 fi
 
-# Tabela de Cores (Imutáveis - Readonly para "POO-style")
-readonly C_RESET="\[\e[0m\]"
-readonly C_GREEN="\[\e[1;32m\]"
-readonly C_RED="\[\e[1;31m\]"
-readonly C_BLUE="\[\e[1;34m\]"
-readonly C_YELLOW="\[\e[1;33m\]"
-readonly C_PURPLE="\[\e[1;35m\]"
-readonly C_CYAN="\[\e[1;36m\]"
-readonly C_GRAY="\[\e[0;37m\]"
-readonly C_WHITE="\[\e[1;37m\]"
+# Tabela de Cores (Verifica se já existem para evitar alertas no 'source')
+[[ -z "$C_RESET" ]]  && readonly C_RESET="\[\e[0m\]"
+[[ -z "$C_GREEN" ]]  && readonly C_GREEN="\[\e[1;32m\]"
+[[ -z "$C_RED" ]]    && readonly C_RED="\[\e[1;31m\]"
+[[ -z "$C_BLUE" ]]   && readonly C_BLUE="\[\e[1;34m\]"
+[[ -z "$C_YELLOW" ]] && readonly C_YELLOW="\[\e[1;33m\]"
+[[ -z "$C_PURPLE" ]] && readonly C_PURPLE="\[\e[1;35m\]"
+[[ -z "$C_CYAN" ]]   && readonly C_CYAN="\[\e[1;36m\]"
+[[ -z "$C_GRAY" ]]   && readonly C_GRAY="\[\e[0;37m\]"
+[[ -z "$C_WHITE" ]]  && readonly C_WHITE="\[\e[1;37m\]"
 #------------------------------- FIM-CONSTANTES -------------------------------<
 
 
 #-------------------------------- UTILITÁRIOS --------------------------------->
 # Atualiza a largura da tela dinamicamente (Signal Trap)
 trap 'COLUMNS=$(tput cols)' SIGWINCH
-COLUMNS=$(tput cols)
+COLUMNS=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
 
-# Retorna o tamanho real da string ignorando os escapes ANSI (cores)
+# Retorna o tamanho real da string ignorando os escapes ANSI e marcadores do Bash \[\]
 get_visible_length() {
     local string="$1"
-    # Remove sequências de escape ANSI via sed
-    string=$(printf "%s" "$string" | sed 's/\x1B\[[0-9;]*[a-zA-Z]//g')
+    string=$(printf "%s" "$string" | sed -E 's/\\\[|\\\]//g; s/\x1B\[[0-9;]*[a-zA-Z]//g')
     printf "%s" "${#string}"
 }
 
@@ -77,12 +74,23 @@ format_time() {
     
     printf "%sm%ss" "$(( s / 60 ))" "$(( s % 60 ))"
 }
+
+# Obtém timestamp atual em milissegundos tratando ponto e vírgula de locale
+get_time_ms() {
+    if [[ -n "$EPOCHREALTIME" ]]; then
+        # Normaliza a vírgula para ponto caso o sistema esteja em pt_BR
+        local epoch_norm="${EPOCHREALTIME/,/.}"
+        local sec="${epoch_norm%.*}"
+        local usec="${epoch_norm#*.}"
+        printf "%s%s" "$sec" "${usec:0:3}"
+    else
+        date +%s%3N
+    fi
+}
 #------------------------------ FIM-UTILITÁRIOS -------------------------------<
 
 
 #---------------------------- MÓDULOS DE CONTEXTO ----------------------------->
-# Funções de extração de dados (Similar a métodos de uma classe Context)
-
 get_compact_path() {
     local current_path="$PWD"
     local home_path="${HOME%/}"
@@ -106,7 +114,6 @@ get_git_block() {
 }
 
 get_docker_block() {
-    # Verifica indícios de containerização ou virtualização leve
     if [[ -f /.dockerenv ]] || grep -q 'docker\|lxc' /proc/1/cgroup 2>/dev/null; then
         printf "[ container ]"
     fi
@@ -134,27 +141,36 @@ get_exit_block() {
 
 
 #-------------------------------- MOTOR DE TEMPO ------------------------------>
-# Captura o tempo de execução de cada comando via DEBUG trap
 timer_start() {
     [[ "$BASH_COMMAND" == "build_prompt" ]] && return
-    CMD_START=$(date +%s%3N)
+    CMD_START=$(get_time_ms)
     CMD_RUNNING=1
 }
 trap 'timer_start' DEBUG
 
 timer_stop() {
     if (( CMD_RUNNING == 1 )); then
-        local diff=$(( $(date +%s%3N) - CMD_START ))
+        local now=$(get_time_ms)
+        local diff=$(( now - CMD_START ))
         CMD_RUNNING=0
         
-        # Só exibe se o comando demorou mais que 50ms
         if (( diff > 50 )); then
-            TIMER=$(format_time "$diff")
+            # Guarda apenas o texto plano para não quebrar o cálculo das colunas
+            TIMER_VAL=$(format_time "$diff")
+            
+            # Marca como comando longo (> 5s) para mudar a cor dinamicamente
+            if (( diff > 5000 )); then
+                TIMER_IS_LONG=1
+            else
+                TIMER_IS_LONG=0
+            fi
         else
-            TIMER=""
+            TIMER_VAL=""
+            TIMER_IS_LONG=0
         fi
     else
-        TIMER=""
+        TIMER_VAL=""
+        TIMER_IS_LONG=0
     fi
 }
 #------------------------------ FIM-MOTOR DE TEMPO ----------------------------<
@@ -200,11 +216,19 @@ build_prompt() {
     local exit_info=$(get_exit_block "$last_exit")
     local clock_info="[ $(date +%H:%M:%S) ]"
 
-    local bottom_l_raw="$jobs_info"
-    local bottom_l_col="${C_PURPLE}${jobs_info}${C_RESET}"
+    # Define a cor do timer: Cinza para <5s, Vermelho para >=5s
+    # Nota: Caso queira o timer SEMPRE vermelho, altere "$C_GRAY" para "$C_RED" abaixo.
+    local timer_color="$C_GRAY"
+    (( TIMER_IS_LONG == 1 )) && timer_color="$C_RED"
 
-    local bottom_r_raw="${TIMER:+[ $TIMER ] }$exit_info $clock_info"
-    local bottom_r_col="${TIMER:+${C_GRAY}[ $TIMER ]${C_RESET} }${exit_info:+${C_RED}${exit_info}${C_RESET} }${C_YELLOW}${clock_info}${C_RESET}"
+    # Texto PURO para cálculo perfeito do espaçamento
+    local timer_raw="${TIMER_VAL:+[ $TIMER_VAL ] }"
+    local bottom_l_raw="$jobs_info"
+    local bottom_r_raw="${timer_raw}${exit_info:+$exit_info }$clock_info"
+
+    # Texto COLORIDO para renderização visual
+    local bottom_l_col="${C_PURPLE}${jobs_info}${C_RESET}"
+    local bottom_r_col="${TIMER_VAL:+${timer_color}[ $TIMER_VAL ]${C_RESET} }${exit_info:+${C_RED}${exit_info}${C_RESET} }${C_YELLOW}${clock_info}${C_RESET}"
 
     # 5. Cálculo de Espaçamento Dinâmico (Alinhamento à direita)
     local left_len=$(get_visible_length "$bottom_l_raw")
@@ -219,7 +243,7 @@ build_prompt() {
     PS1="${top_color}\n${bottom_l_col}${padding}${bottom_r_col}\n$ "
 
     # 7. Atualização do Título do Emulador de Terminal
-    printf "\033]0;%s@%s: %s\007" "$USER" "${HOSTNAME}" "${PWD}"
+    printf "\033]0;%s@%s: %s\007" "$USER" "${HOSTNAME:-$(hostname)}" "${PWD}"
 }
 
 # Define o gatilho para a construção do prompt
@@ -232,5 +256,8 @@ if ! shopt -oq posix; then
         . /usr/share/bash-completion/bash_completion
 fi
 
-# Habilitando extras do literade para emacs elisp
+# Habilitando extras do Doom Emacs / Emacs
 export PATH="$HOME/.config/emacs/bin:$PATH"
+
+# Ativar modo Dark Theme no GTK4 execute o comando abaixo
+# gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'

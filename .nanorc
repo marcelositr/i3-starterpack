@@ -1,25 +1,14 @@
-set constantshow
-set smarthome
-set tabsize 4
-set tabstospaces
+## Mostrar linhas
+set linenumbers
+
+## Correção automática de indentação para Python
 set autoindent
-set trimblanks
 
-# Toggle with Alt+$
-set softwrap
-set atblanks
+## Mostrar numero de colunas
+set constantshow
 
-# Toggle with Alt+X
-set nohelp
+## Largira de página
+set fill 80
 
-# Toggle with Alt+M
-# set mouse
-
-# Toggle with Alt+#
-# set linenumbers
-
-# Toggle with F12
-set speller "aspell -x -c"
-
-# Minibar
-set minibar
+## Verificador ortografico
+set speller "aspell -c"

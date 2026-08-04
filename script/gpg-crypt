@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Criptorafador GPG para uso com Thunar
+
+ARQUIVO="$1"
+
+if [ -z "$ARQUIVO" ]; then
+    echo "Uso: $0 arquivo"
+    exit 1
+fi
+
+gpg --encrypt \
+    --recipient marcelost@riseup.net \
+    "$ARQUIVO"
+
+echo
+echo "Arquivo criptografado:"
+echo "${ARQUIVO}.gpg"
+
+read -p "Pressione ENTER para sair..."

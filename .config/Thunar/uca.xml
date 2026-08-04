@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Open Terminal Here</name>
+	<submenu></submenu>
+	<unique-id>1785179633931026-1</unique-id>
+	<command>exo-open --working-directory %f --launch TerminalEmulator</command>
+	<description>Example for a custom action</description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>keepassxc-unlocked</icon>
+	<name>Montar</name>
+	<submenu>GO Crypt FS</submenu>
+	<unique-id>1785867249503148-1</unique-id>
+	<command>xfce4-terminal -e &quot;gocryptfs %f /home/marcelositr/unlocked&quot;</command>
+	<description>Montar diretório ~/locked</description>
+	<range>locked</range>
+	<patterns>locked</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>keepassxc-locked</icon>
+	<name>Desmontar</name>
+	<submenu>GO Crypt FS</submenu>
+	<unique-id>1785867342309805-2</unique-id>
+	<command>fusermount -u /home/marcelositr/unlocked</command>
+	<description>Desmontar diretório ~/unlocked</description>
+	<range>unlocked</range>
+	<patterns>unlocked</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>im-user-online</icon>
+	<name>Assinar</name>
+	<submenu>GPG</submenu>
+	<unique-id>1785870088298270-4</unique-id>
+	<command>/home/marcelositr/script/gpg-sign %f</command>
+	<description>Assinar documentos com GPG</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>cryptfolder-closed-light</icon>
+	<name>Criptografar</name>
+	<submenu>GPG</submenu>
+	<unique-id>1785868693187940-1</unique-id>
+	<command>/home/marcelositr/script/gpg-crypt %f</command>
+	<description>Criptografar usando GPG</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>cryptfolder-open-light</icon>
+	<name>Descriptografar</name>
+	<submenu>GPG</submenu>
+	<unique-id>1785868766243338-2</unique-id>
+	<command>/home/marcelositr/script/gpg-decrypt %f</command>
+	<description>Descriptografar arquivo GPG</description>
+	<range></range>
+	<patterns>*.gpg</patterns>
+	<startup-notify/>
+	<other-files/>
+</action>
+<action>
+	<icon>fr.romainvigier.MetadataCleaner</icon>
+	<name>Remover Meta Dados</name>
+	<submenu></submenu>
+	<unique-id>1785869566909995-3</unique-id>
+	<command>exiftool -all= %f</command>
+	<description>Remove todos os metadados de imagens</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<image-files/>
+</action>
+</actions>

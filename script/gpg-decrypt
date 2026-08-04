@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Descriptografador GPG para uso com Thunar
+
+ARQUIVO="$1"
+
+if [ -z "$ARQUIVO" ]; then
+    echo "Uso: $0 arquivo.gpg"
+    exit 1
+fi
+
+SAIDA="${ARQUIVO%.gpg}"
+
+gpg --output "$SAIDA" \
+    --decrypt "$ARQUIVO"
+
+echo
+echo "Arquivo descriptografado:"
+echo "$SAIDA"
+
+read -p "Pressione ENTER para sair..."

@@ -1,23 +1,25 @@
-name: Validate
+name: CI / Quick
 
 on:
   push:
-  pull_request:
+    branches-ignore:
+      - master
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-quick-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  configs:
+  quick:
+    name: Quick validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install validators
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes i3-wm libxml2-utils shellcheck
-
-      - name: Validate files
-        run: ./script/validate
+      - name: Validate essentials
+        run: ./script/validate-quick

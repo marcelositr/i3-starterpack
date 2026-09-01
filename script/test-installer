@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+IFS=$'\n\t'
+
+readonly ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+[[ "${EUID:-$(id -u)}" -ne 0 ]] || {
+    printf 'ERRO: execute este teste como usuário não-root.\n' >&2
+    exit 1
+}
+
+command -v script >/dev/null 2>&1 || {
+    printf 'ERRO: o comando script (util-linux) é necessário.\n' >&2
+    exit 1
+}
+
+TEST_ROOT="$(mktemp -d -t i3-starterpack-test.XXXXXX)"
+trap 'rm -rf -- "$TEST_ROOT"' EXIT
+
+TEST_HOME="$TEST_ROOT/home"
+FAKE_BIN="$TEST_ROOT/bin"
+DRY_LOG="$TEST_ROOT/dry-run.log"
+RUN_LOG="$TEST_ROOT/run.log"
+mkdir -p -- "$TEST_HOME/.config/foreign-app" "$FAKE_BIN"
+
+printf 'original bashrc\n' > "$TEST_HOME/.bashrc"
+printf 'legacy nano path\n' > "$TEST_HOME/.nano"
+printf 'keep me\n' > "$TEST_HOME/.config/foreign-app/keep.conf"
+
+cat > "$FAKE_BIN/dpkg-query" <<'MOCK'
+#!/usr/bin/env bash
+printf 'install ok installed'
+MOCK
+chmod +x "$FAKE_BIN/dpkg-query"
+
+readonly TEST_PATH="$FAKE_BIN:$PATH"
+readonly USER_NAME="${USER:-$(id -un)}"
+
+HOME="$TEST_HOME" USER="$USER_NAME" PATH="$TEST_PATH" \
+    ./script/i3-starterpack-install --dry-run > "$DRY_LOG"
+
+grep -q 'Dry run concluído. Nenhuma alteração foi realizada.' "$DRY_LOG"
+grep -q 'Conflitos de conteúdo:' "$DRY_LOG"
+grep -q 'Conflitos de tipo:' "$DRY_LOG"
+[[ "$(cat "$TEST_HOME/.bashrc")" == 'original bashrc' ]]
+[[ -f "$TEST_HOME/.nano" ]]
+[[ "$(cat "$TEST_HOME/.config/foreign-app/keep.conf")" == 'keep me' ]]
+[[ ! -e "$TEST_HOME/.local/share/i3-starterpack/backups" ]]
+
+printf -v RUN_COMMAND 'env HOME=%q USER=%q PATH=%q %q --run' \
+    "$TEST_HOME" "$USER_NAME" "$TEST_PATH" "$ROOT_DIR/script/i3-starterpack-install"
+
+printf 's\n' | script -q -e -c "$RUN_COMMAND" /dev/null > "$RUN_LOG"
+
+grep -q 'Instalação concluída com sucesso.' "$RUN_LOG"
+cmp -s -- "$ROOT_DIR/.bashrc" "$TEST_HOME/.bashrc"
+[[ -d "$TEST_HOME/.nano" ]]
+[[ "$(cat "$TEST_HOME/.config/foreign-app/keep.conf")" == 'keep me' ]]
+
+BACKUP_DIR="$(find "$TEST_HOME/.local/share/i3-starterpack/backups" \
+    -mindepth 1 -maxdepth 1 -type d -print -quit)"
+[[ -n "$BACKUP_DIR" ]]
+[[ "$(cat "$BACKUP_DIR/.bashrc")" == 'original bashrc' ]]
+[[ -f "$BACKUP_DIR/.nano" ]]
+[[ "$(cat "$BACKUP_DIR/.nano")" == 'legacy nano path' ]]
+grep -q '^\.bashrc$' "$BACKUP_DIR/manifest.txt"
+grep -q '^\.nano$' "$BACKUP_DIR/manifest.txt"
+
+printf 'Teste do instalador concluído.\n'

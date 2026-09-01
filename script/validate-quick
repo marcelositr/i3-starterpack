@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+readonly ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+readonly -a SHELL_FILES=(
+    .bashrc
+    .profile
+    script/gpg-crypt
+    script/gpg-decrypt
+    script/gpg-sign
+    script/screenshot
+    script/validate
+    script/validate-quick
+    script/test-installer
+    script/i3-starterpack-install
+)
+
+bash -n "${SHELL_FILES[@]}"
+
+python3 - <<'PY'
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
+xml_files = (
+    Path('.config/Thunar/uca.xml'),
+    Path('.config/xfce4/xfconf/xfce-perchannel-xml/thunar.xml'),
+    Path('.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-terminal.xml'),
+)
+for xml_file in xml_files:
+    ET.parse(xml_file)
+
+path = Path('.config/i3status/config')
+content = '\n'.join(
+    line.split('#', 1)[0]
+    for line in path.read_text(encoding='utf-8').splitlines()
+)
+if content.count('{') != content.count('}'):
+    raise SystemExit(f'Chaves desbalanceadas em {path}')
+
+first_party_configs = (
+    Path('.bashrc'),
+    Path('.profile'),
+    Path('.config/i3/config'),
+    Path('.config/i3status/config'),
+    Path('.config/Thunar/uca.xml'),
+)
+for config in first_party_configs:
+    if '/home/' in config.read_text(encoding='utf-8'):
+        raise SystemExit(f'Caminho absoluto de usuário em {config}')
+
+non_executable = (
+    Path('.bashrc'),
+    Path('.profile'),
+    Path('.nanorc'),
+    Path('.config/i3/config'),
+    Path('.config/i3status/config'),
+)
+for config in non_executable:
+    if config.stat().st_mode & 0o111:
+        raise SystemExit(f'Dotfile marcado como executável: {config}')
+
+nanorc = Path('.nanorc').read_text(encoding='utf-8')
+if 'include "~/.nano/*.nanorc"' not in nanorc:
+    raise SystemExit('O pacote de sintaxe do Nano não está incluído por completo')
+if not any(Path('.nano').glob('*.nanorc')):
+    raise SystemExit('Nenhuma sintaxe do Nano foi encontrada')
+PY
+
+printf 'Validações rápidas concluídas.\n'

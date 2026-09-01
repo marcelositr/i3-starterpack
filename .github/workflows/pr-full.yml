@@ -1,0 +1,39 @@
+name: CI / Full
+
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-full-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  full:
+    name: Full validation
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie-slim
+
+    steps:
+      - name: Install validators
+        run: |
+          apt-get update
+          apt-get install --yes --no-install-recommends \
+            ca-certificates git i3-wm libxml2-utils python3 shellcheck util-linux
+
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Validate repository
+        env:
+          I3_STARTERPACK_STRICT_CI: "1"
+        run: ./script/validate
+
+      - name: Exercise installer safely
+        run: runuser -u nobody -- env HOME=/tmp USER=nobody ./script/test-installer

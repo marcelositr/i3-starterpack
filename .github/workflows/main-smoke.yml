@@ -1,0 +1,25 @@
+name: CI / Main Smoke
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-main-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Main smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Smoke validation
+        run: ./script/validate-quick

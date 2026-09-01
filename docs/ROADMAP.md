@@ -28,3 +28,12 @@ conversa.
 - [ ] Decidir se o fork será mantido ou convertido em projeto independente.
 - [ ] Avaliar reescrita do histórico para remover blobs antigos; exige backup e
       `force push`, portanto não será feita sem autorização explícita.
+
+## Sincronização dos dados locais
+
+- [x] Incorporar o pacote de realce de sintaxe do Nano.
+- [x] Restaurar licenças removidas durante a sincronização.
+- [x] Corrigir novamente o bloco `time` do i3status.
+- [x] Restaurar o script portátil de screenshot.
+- [x] Remover caminhos pessoais das configurações de Bash e i3.
+- [x] Impedir regressões de caminhos absolutos e permissões no validador.

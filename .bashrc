@@ -260,5 +260,18 @@ fi
 # Habilitando extras do Doom Emacs / Emacs
 export PATH="$HOME/.config/emacs/bin:$PATH"
 
+# Exportando pasta ~/.local/bin para pacotes executaveis
+export PATH="$HOME/.local/bin:$PATH"
+
 # Ativar modo Dark Theme no GTK4 execute o comando abaixo
 # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+
+# fnm
+FNM_PATH="$HOME/.local/share/fnm"
+if [[ -d $FNM_PATH ]]; then
+    export PATH="$FNM_PATH:$PATH"
+    if command -v fnm >/dev/null 2>&1; then
+        eval "$(fnm env --shell bash)"
+    fi
+fi
+unset FNM_PATH

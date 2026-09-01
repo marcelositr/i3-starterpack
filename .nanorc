@@ -7,8 +7,11 @@ set autoindent
 ## Mostrar numero de colunas
 set constantshow
 
-## Largira de página
+## Largura de página
 set fill 80
 
 ## Verificador ortografico
 set speller "aspell -c"
+
+## Realce de sintaxe instalado em ~/.nano
+include "~/.nano/*.nanorc"

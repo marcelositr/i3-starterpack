@@ -5,63 +5,49 @@ set -Eeuo pipefail
 readonly ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-bash -n .bashrc .profile script/gpg-crypt script/gpg-decrypt script/gpg-sign \
-    script/screenshot script/validate script/i3-starterpack-install
+bash ./script/validate-quick
 
-if command -v shellcheck >/dev/null 2>&1; then
-    shellcheck --severity=error .bashrc .profile script/gpg-crypt script/gpg-decrypt \
-        script/gpg-sign script/screenshot script/validate script/i3-starterpack-install
+readonly -a SHELL_FILES=(
+    .bashrc
+    .profile
+    script/gpg-crypt
+    script/gpg-decrypt
+    script/gpg-sign
+    script/screenshot
+    script/validate
+    script/validate-quick
+    script/test-installer
+    script/i3-starterpack-install
+)
+
+require_validator() {
+    local command_name="$1"
+
+    if command -v "$command_name" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    if [[ "${I3_STARTERPACK_STRICT_CI:-0}" == "1" ]]; then
+        printf 'Validador obrigatório ausente: %s\n' "$command_name" >&2
+        exit 1
+    fi
+
+    return 1
+}
+
+if require_validator shellcheck; then
+    shellcheck --severity=error "${SHELL_FILES[@]}"
 fi
 
-if command -v xmllint >/dev/null 2>&1; then
-    xmllint --noout .config/Thunar/uca.xml \
+if require_validator xmllint; then
+    xmllint --noout \
+        .config/Thunar/uca.xml \
         .config/xfce4/xfconf/xfce-perchannel-xml/thunar.xml \
         .config/xfce4/xfconf/xfce-perchannel-xml/xfce4-terminal.xml
 fi
 
-python3 - <<'PY'
-from pathlib import Path
-
-path = Path(".config/i3status/config")
-content = "\n".join(
-    line.split("#", 1)[0]
-    for line in path.read_text(encoding="utf-8").splitlines()
-)
-
-if content.count("{") != content.count("}"):
-    raise SystemExit(f"Chaves desbalanceadas em {path}")
-
-first_party_configs = (
-    Path(".bashrc"),
-    Path(".profile"),
-    Path(".config/i3/config"),
-    Path(".config/i3status/config"),
-    Path(".config/Thunar/uca.xml"),
-)
-for config in first_party_configs:
-    if "/home/" in config.read_text(encoding="utf-8"):
-        raise SystemExit(f"Caminho absoluto de usuário em {config}")
-
-non_executable = (
-    Path(".bashrc"),
-    Path(".profile"),
-    Path(".nanorc"),
-    Path(".config/i3/config"),
-    Path(".config/i3status/config"),
-)
-for config in non_executable:
-    if config.stat().st_mode & 0o111:
-        raise SystemExit(f"Dotfile marcado como executável: {config}")
-
-nanorc = Path(".nanorc").read_text(encoding="utf-8")
-if 'include "~/.nano/*.nanorc"' not in nanorc:
-    raise SystemExit("O pacote de sintaxe do Nano não está incluído por completo")
-if not any(Path(".nano").glob("*.nanorc")):
-    raise SystemExit("Nenhuma sintaxe do Nano foi encontrada")
-PY
-
-if command -v i3 >/dev/null 2>&1; then
+if require_validator i3; then
     i3 -C -c .config/i3/config
 fi
 
-printf 'Validações concluídas.\n'
+printf 'Validações completas concluídas.\n'

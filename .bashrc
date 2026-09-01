@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # ~/.bashrc
 #-----------HEADER-------------------------------------------------------------|
 # AUTOR             : Marcelo Trindade - @marcelositr - marcelost@riseup.net

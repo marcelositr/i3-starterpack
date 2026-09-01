@@ -49,4 +49,4 @@ volume master {
 
 time {
 	format = "<span background='#b48ead' foreground='#2E3440'>    </span><span background='#4C566A'>  %d de %b às %H:%M  </span>"
-
+}

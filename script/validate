@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+readonly ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+bash -n .bashrc script/gpg-crypt script/gpg-decrypt script/gpg-sign \
+    script/screenshot script/validate
+
+if command -v shellcheck >/dev/null 2>&1; then
+    shellcheck --severity=error .bashrc script/gpg-crypt script/gpg-decrypt \
+        script/gpg-sign script/screenshot script/validate
+fi
+
+if command -v xmllint >/dev/null 2>&1; then
+    xmllint --noout .config/Thunar/uca.xml \
+        .config/xfce4/xfconf/xfce-perchannel-xml/thunar.xml \
+        .config/xfce4/xfconf/xfce-perchannel-xml/xfce4-terminal.xml
+fi
+
+python3 - <<'PY'
+from pathlib import Path
+
+path = Path(".config/i3status/config")
+content = "\n".join(
+    line.split("#", 1)[0]
+    for line in path.read_text(encoding="utf-8").splitlines()
+)
+
+if content.count("{") != content.count("}"):
+    raise SystemExit(f"Chaves desbalanceadas em {path}")
+PY
+
+if command -v i3 >/dev/null 2>&1; then
+    i3 -C -c .config/i3/config
+fi
+
+printf 'Validações concluídas.\n'

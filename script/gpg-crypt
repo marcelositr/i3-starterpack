@@ -1,20 +1,36 @@
 #!/usr/bin/env bash
 
-# Criptorafador GPG para uso com Thunar
+# Criptografador GPG para uso com Thunar.
+set -Eeuo pipefail
 
-ARQUIVO="$1"
+readonly ARQUIVO="${1:-}"
+readonly DESTINATARIO="${GPG_RECIPIENT:-marcelost@riseup.net}"
+readonly SAIDA="${ARQUIVO}.gpg"
 
-if [ -z "$ARQUIVO" ]; then
-    echo "Uso: $0 arquivo"
+pausar() {
+    if [[ -t 0 ]]; then
+        read -r -p "Pressione ENTER para sair..." _
+    fi
+}
+
+if [[ -z "$ARQUIVO" || ! -f "$ARQUIVO" ]]; then
+    printf 'Uso: %s arquivo\n' "$0" >&2
     exit 1
 fi
 
-gpg --encrypt \
-    --recipient marcelost@riseup.net \
-    "$ARQUIVO"
+if [[ -e "$SAIDA" ]]; then
+    printf 'O arquivo de saída já existe: %s\n' "$SAIDA" >&2
+    pausar
+    exit 1
+fi
 
-echo
-echo "Arquivo criptografado:"
-echo "${ARQUIVO}.gpg"
+if gpg --output "$SAIDA" --encrypt --recipient "$DESTINATARIO" -- "$ARQUIVO" \
+    && [[ -f "$SAIDA" ]]; then
+    printf '\nArquivo criptografado: %s\n' "$SAIDA"
+else
+    printf '\nFalha ao criptografar: %s\n' "$ARQUIVO" >&2
+    pausar
+    exit 1
+fi
 
-read -p "Pressione ENTER para sair..."
+pausar

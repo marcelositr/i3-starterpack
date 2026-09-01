@@ -1,0 +1,13 @@
+# Arquivos temporários de editores
+*~
+*.swp
+*.swo
+
+# Estado local do Emacs
+.config/emacs/custom.el
+.config/emacs/history
+.config/emacs/places
+.config/emacs/recentf
+
+# Lixo de desktop
+.DS_Store

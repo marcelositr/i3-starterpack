@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # ~/.bashrc
 #-----------HEADER-------------------------------------------------------------|
 # AUTOR             : Marcelo Trindade - @marcelositr - marcelost@riseup.net
@@ -264,11 +265,13 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Ativar modo Dark Theme no GTK4 execute o comando abaixo
 # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-. "$HOME/.cargo/env"
 
 # fnm
-FNM_PATH="/home/marcelositr/.local/share/fnm"
-if [ -d "$FNM_PATH" ]; then
-  export PATH="$FNM_PATH:$PATH"
-  eval "$(fnm env --shell bash)"
+FNM_PATH="$HOME/.local/share/fnm"
+if [[ -d $FNM_PATH ]]; then
+    export PATH="$FNM_PATH:$PATH"
+    if command -v fnm >/dev/null 2>&1; then
+        eval "$(fnm env --shell bash)"
+    fi
 fi
+unset FNM_PATH

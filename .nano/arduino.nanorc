@@ -10,7 +10,7 @@
 ##
 ## HOMEPAGE:    http://code.google.com/p/arduino-nano-editor-syntax/
 ##
-## COMMENTS:    -Most of the code was taken from the c.nanorc code found with 
+## COMMENTS:    -Most of the code was taken from the c.nanorc code found with
 ##               GNU nano 2.2.6.
 ##              -Direction was taken from the arduino vim syntax code by johannes
 ##               <https://bitbucket.org/johannes/arduino-vim-syntax/>
@@ -28,10 +28,10 @@
 
 syntax "INO"  "\.?ino$"
 
-## 
-color brightred "\<[A-Z_][0-9A-Z_]+\>" 
+##
+color brightred "\<[A-Z_][0-9A-Z_]+\>"
 
-## 
+##
 color green "\<((s?size)|((u_?)?int(8|16|32|64|ptr)))_t\>"
 
 ## Constants
@@ -58,7 +58,7 @@ icolor green "\<(DEFAULT|EXTERNAL|INTERNAL|INTERNAL1V1|INTERNAL2V56)\>"
 color green "\<(boolean|byte|char|float|int|long|word)\>"
 
 ## Control Structions
-color brightyellow "\<(case|class|default|do|double|else|false|for|if|new|null|private|protected|public|short|signed|static|String|switch|this|throw|try|true|unsigned|void|while)\>" 
+color brightyellow "\<(case|class|default|do|double|else|false|for|if|new|null|private|protected|public|short|signed|static|String|switch|this|throw|try|true|unsigned|void|while)\>"
 color magenta "\<(goto|continue|break|return)\>"
 
 ## Math
@@ -91,10 +91,10 @@ color magenta "\<(Serial|Serial1|Serial2|Serial3|begin|end|peek|read|print|print
 ## Structure
 color brightyellow "\<(setup|loop)\>"
 
-## 
+##
 color brightcyan "^[[:space:]]*#[[:space:]]*(define|include(_next)?|(un|ifn?)def|endif|el(if|se)|if|warning|error|pragma)"
 
-## 
+##
 color brightmagenta "'([^'\]|(\\["'abfnrtv\\]))'" "'\\(([0-3]?[0-7]{1,2}))'" "'\\x[0-9A-Fa-f]{1,2}'"
 
 ## GCC builtins

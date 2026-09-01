@@ -8,7 +8,7 @@ de apoio.
 ## Conteúdo
 
 - configuração do i3 e i3status;
-- Bash prompt, Nano e Emacs;
+- Bash prompt, Nano com realce de sintaxe e Emacs;
 - preferências GTK, Qt, Thunar e XFCE Terminal;
 - tema Nordic, configuração Kvantum e Symbols Nerd Font;
 - scripts para screenshot, criptografia, descriptografia e assinatura GPG.
@@ -21,7 +21,7 @@ gerenciador de pacotes, evitando mais de cem mil arquivos copiados do sistema.
 Os nomes abaixo correspondem aos pacotes normalmente usados no Debian 13:
 
 ```bash
-sudo apt install i3-wm i3status suckless-tools hsetroot scrot i3lock \
+sudo apt install i3-wm i3status suckless-tools hsetroot scrot i3lock nano \
   brightnessctl alsa-utils thunar xfce4-terminal exo-utils gocryptfs fuse3 \
   gnupg libimage-exiftool-perl papirus-icon-theme qt5ct qt6ct \
   fonts-ibm-plex aspell aspell-pt-br
@@ -39,6 +39,7 @@ com um `cp -r` no modo kamikaze.
 Os caminhos esperados são:
 
 - configurações em `$HOME/.config`;
+- sintaxes do Nano em `$HOME/.nano`;
 - temas, fontes e wallpapers em `$HOME/.local/share`;
 - scripts executáveis em `$HOME/script`;
 - `.bashrc`, `.profile`, `.nanorc` e `.face` diretamente em `$HOME`.

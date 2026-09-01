@@ -46,4 +46,3 @@ icolor brightmagenta "\<(YEAR)\>"
 icolor cyan "\?\w+"
 icolor brightgreen "<.+:[^ >]+>"
 icolor green " \w+:"
-

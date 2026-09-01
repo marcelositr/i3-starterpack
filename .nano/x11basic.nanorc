@@ -137,7 +137,7 @@ icolor brightblue "\<(and|or|not|to|xor|not|then|step|var|tab|using)\>"
 
 ## operators
 color white "[+*=\^]" "<" ">" "/" "-"
-color brightred "[@\~]" 
+color brightred "[@\~]"
 
 
 ## number constants

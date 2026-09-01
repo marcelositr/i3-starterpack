@@ -24,7 +24,7 @@ color brightyellow "\<(__CALLER__|__DIR__|__ENV__|__MODULE__|__STACKTRACE__)\>"
 color brightyellow "\<(__add__|__aliases__|__build__|__block__|__deriving__|__info__|__protocol__|__struct__|__using__)\>"
 
 ## sigils
-color brightmagenta "~[a-z]\/([^\/])*\/[a-z]*" "~[a-z]\|([^\|])*\|[a-z]*" "~[a-z]\"([^\"])*\"[a-z]*" "~[a-z]\'([^\'])*\'[a-z]*" "~[a-z]\(([^\(\)])*\)[a-z]*" "~[a-z]\[([^\[\]])*\][a-z]*" "~[a-z]\{([^\{\}])*\}[a-z]*" "~[a-z]\<([^\<\>])*\>[a-z]*" 
+color brightmagenta "~[a-z]\/([^\/])*\/[a-z]*" "~[a-z]\|([^\|])*\|[a-z]*" "~[a-z]\"([^\"])*\"[a-z]*" "~[a-z]\'([^\'])*\'[a-z]*" "~[a-z]\(([^\(\)])*\)[a-z]*" "~[a-z]\[([^\[\]])*\][a-z]*" "~[a-z]\{([^\{\}])*\}[a-z]*" "~[a-z]\<([^\<\>])*\>[a-z]*"
 
 ## Strings, double-quoted
 color green ""([^"]|(\\"))*""

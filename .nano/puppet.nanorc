@@ -35,4 +35,3 @@ color brightcyan "##[^{].*$" "##$"
 color brightcyan "(XXX|TODO|FIXME|\?\?\?)"
 ## Trailing spaces
 color ,green "[[:space:]]+$"
-

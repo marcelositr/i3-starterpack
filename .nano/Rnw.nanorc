@@ -36,4 +36,3 @@ color magenta "(\;|\||\^){1}"
 color green "(\;\;|\|\||::|=>|->)"
 # STRINGS!
 color red "('[^']*')|(\"[^\"]*\")"
-

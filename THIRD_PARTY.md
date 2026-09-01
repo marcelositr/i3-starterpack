@@ -14,6 +14,9 @@ componentes originais.
 - **Nordic para Kvantum**, identificado nos próprios arquivos como trabalho de
   Eliver Lara. A origem e a licença devem ser confirmadas antes de qualquer
   redistribuição fora deste fork.
+- **Improved Nano Syntax Highlighting**, do projeto
+  [scopatz/nanorc](https://github.com/scopatz/nanorc). Os avisos, autores e a
+  licença acompanham os arquivos em `.nano/`.
 
 ## Dependência externa
 

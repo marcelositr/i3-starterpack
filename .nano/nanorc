@@ -1,17 +1,3 @@
-## Mostrar linhas
-set linenumbers
-
-## Correção automática de indentação para Python
-set autoindent
-
-## Mostrar numero de colunas
-set constantshow
-
-## Largura de página
-set fill 80
-
-## Verificador ortografico
-set speller "aspell -c"
 include "~/.nano/apacheconf.nanorc"
 include "~/.nano/arduino.nanorc"
 include "~/.nano/asciidoc.nanorc"

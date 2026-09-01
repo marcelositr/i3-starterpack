@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Captura a tela e abre a imagem no aplicativo padrão.
+set -Eeuo pipefail
+
+readonly DESTINO="${SCREENSHOT_DIR:-$HOME/print}"
+readonly ARQUIVO="$DESTINO/Cheese_%a-%d%b%y_%H.%M.png"
+
+mkdir -p "$DESTINO"
+scrot "$ARQUIVO" -e 'xdg-open "$f"'

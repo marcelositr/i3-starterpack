@@ -1,57 +1,36 @@
 #!/usr/bin/env bash
 
-# Assinador GPG para uso com Thunar
+# Assinador GPG para uso com Thunar.
+set -Eeuo pipefail
 
-ARQUIVO="$1"
+readonly ARQUIVO="${1:-}"
+readonly CHAVE="${GPG_SIGNING_KEY:-marcelost@riseup.net}"
+readonly SAIDA="${ARQUIVO}.sig"
 
-# Coloque aqui o ID da sua chave privada GPG
-CHAVE="marcelost@riseup.net"
+pausar() {
+    if [[ -t 0 ]]; then
+        read -r -p "Pressione ENTER para sair..." _
+    fi
+}
 
-
-if [ -z "$ARQUIVO" ]; then
-    echo "Nenhum arquivo informado."
-    echo
-    read -p "Pressione ENTER para sair..."
+if [[ -z "$ARQUIVO" || ! -f "$ARQUIVO" ]]; then
+    printf 'Uso: %s arquivo\n' "$0" >&2
     exit 1
 fi
 
-
-if [ ! -f "$ARQUIVO" ]; then
-    echo "Arquivo não encontrado:"
-    echo "$ARQUIVO"
-    echo
-    read -p "Pressione ENTER para sair..."
+if [[ -e "$SAIDA" ]]; then
+    printf 'O arquivo de saída já existe: %s\n' "$SAIDA" >&2
+    pausar
     exit 1
 fi
 
-
-echo "Arquivo:"
-echo "$ARQUIVO"
-echo
-
-echo "Criando assinatura GPG..."
-echo
-
-
-gpg \
-    --local-user "$CHAVE" \
-    --detach-sign \
-    "$ARQUIVO"
-
-
-if [ $? -eq 0 ]; then
-    echo
-    echo "================================"
-    echo " Assinatura criada com sucesso!"
-    echo "================================"
-    echo
-    echo "Arquivo:"
-    echo "${ARQUIVO}.sig"
+if gpg --output "$SAIDA" --local-user "$CHAVE" --detach-sign -- "$ARQUIVO" \
+    && [[ -f "$SAIDA" ]]; then
+    printf '\nAssinatura criada: %s\n' "$SAIDA"
 else
-    echo
-    echo "Erro ao criar assinatura."
+    printf '\nFalha ao assinar: %s\n' "$ARQUIVO" >&2
+    pausar
+    exit 1
 fi
 
-
-echo
-read -p "Pressione ENTER para fechar..."
+pausar

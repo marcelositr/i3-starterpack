@@ -1,21 +1,34 @@
 #!/usr/bin/env bash
 
-# Descriptografador GPG para uso com Thunar
+# Descriptografador GPG para uso com Thunar.
+set -Eeuo pipefail
 
-ARQUIVO="$1"
+readonly ARQUIVO="${1:-}"
+readonly SAIDA="${ARQUIVO%.gpg}"
 
-if [ -z "$ARQUIVO" ]; then
-    echo "Uso: $0 arquivo.gpg"
+pausar() {
+    if [[ -t 0 ]]; then
+        read -r -p "Pressione ENTER para sair..." _
+    fi
+}
+
+if [[ -z "$ARQUIVO" || ! -f "$ARQUIVO" || "$ARQUIVO" != *.gpg ]]; then
+    printf 'Uso: %s arquivo.gpg\n' "$0" >&2
     exit 1
 fi
 
-SAIDA="${ARQUIVO%.gpg}"
+if [[ -e "$SAIDA" ]]; then
+    printf 'O arquivo de saída já existe: %s\n' "$SAIDA" >&2
+    pausar
+    exit 1
+fi
 
-gpg --output "$SAIDA" \
-    --decrypt "$ARQUIVO"
+if gpg --output "$SAIDA" --decrypt -- "$ARQUIVO" && [[ -f "$SAIDA" ]]; then
+    printf '\nArquivo descriptografado: %s\n' "$SAIDA"
+else
+    printf '\nFalha ao descriptografar: %s\n' "$ARQUIVO" >&2
+    pausar
+    exit 1
+fi
 
-echo
-echo "Arquivo descriptografado:"
-echo "$SAIDA"
-
-read -p "Pressione ENTER para sair..."
+pausar

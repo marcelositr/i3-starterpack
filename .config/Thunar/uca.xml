@@ -17,7 +17,7 @@
 	<name>Montar</name>
 	<submenu>GO Crypt FS</submenu>
 	<unique-id>1785867249503148-1</unique-id>
-	<command>xfce4-terminal -e &quot;gocryptfs %f /home/marcelositr/unlocked&quot;</command>
+	<command>xfce4-terminal --command=&quot;gocryptfs \&quot;%f\&quot; \&quot;$HOME/unlocked\&quot;&quot;</command>
 	<description>Montar diretório ~/locked</description>
 	<range>locked</range>
 	<patterns>locked</patterns>
@@ -29,7 +29,7 @@
 	<name>Desmontar</name>
 	<submenu>GO Crypt FS</submenu>
 	<unique-id>1785867342309805-2</unique-id>
-	<command>fusermount -u /home/marcelositr/unlocked</command>
+	<command>sh -c 'if command -v fusermount3 &gt;/dev/null 2&gt;&amp;1; then fusermount3 -u &quot;$HOME/unlocked&quot;; else fusermount -u &quot;$HOME/unlocked&quot;; fi'</command>
 	<description>Desmontar diretório ~/unlocked</description>
 	<range>unlocked</range>
 	<patterns>unlocked</patterns>
@@ -41,7 +41,7 @@
 	<name>Assinar</name>
 	<submenu>GPG</submenu>
 	<unique-id>1785870088298270-4</unique-id>
-	<command>/home/marcelositr/script/gpg-sign %f</command>
+	<command>$HOME/script/gpg-sign &quot;%f&quot;</command>
 	<description>Assinar documentos com GPG</description>
 	<range>*</range>
 	<patterns>*</patterns>
@@ -57,7 +57,7 @@
 	<name>Criptografar</name>
 	<submenu>GPG</submenu>
 	<unique-id>1785868693187940-1</unique-id>
-	<command>/home/marcelositr/script/gpg-crypt %f</command>
+	<command>$HOME/script/gpg-crypt &quot;%f&quot;</command>
 	<description>Criptografar usando GPG</description>
 	<range>*</range>
 	<patterns>*</patterns>
@@ -73,7 +73,7 @@
 	<name>Descriptografar</name>
 	<submenu>GPG</submenu>
 	<unique-id>1785868766243338-2</unique-id>
-	<command>/home/marcelositr/script/gpg-decrypt %f</command>
+	<command>$HOME/script/gpg-decrypt &quot;%f&quot;</command>
 	<description>Descriptografar arquivo GPG</description>
 	<range></range>
 	<patterns>*.gpg</patterns>
@@ -85,7 +85,7 @@
 	<name>Remover Meta Dados</name>
 	<submenu></submenu>
 	<unique-id>1785869566909995-3</unique-id>
-	<command>exiftool -all= %f</command>
+	<command>exiftool -all= &quot;%f&quot;</command>
 	<description>Remove todos os metadados de imagens</description>
 	<range>*</range>
 	<patterns>*</patterns>

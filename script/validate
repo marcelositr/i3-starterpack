@@ -6,11 +6,11 @@ readonly ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 bash -n .bashrc .profile script/gpg-crypt script/gpg-decrypt script/gpg-sign \
-    script/screenshot script/validate
+    script/screenshot script/validate script/i3-starterpack-install
 
 if command -v shellcheck >/dev/null 2>&1; then
     shellcheck --severity=error .bashrc .profile script/gpg-crypt script/gpg-decrypt \
-        script/gpg-sign script/screenshot script/validate
+        script/gpg-sign script/screenshot script/validate script/i3-starterpack-install
 fi
 
 if command -v xmllint >/dev/null 2>&1; then

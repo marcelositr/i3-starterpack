@@ -32,20 +32,50 @@ disponível na distribuição.
 
 ## Instalação
 
-Faça backup dos arquivos atuais antes de copiar qualquer configuração. Este
-repositório contém dotfiles completos e não deve ser despejado sobre `$HOME`
-com um `cp -r` no modo kamikaze.
+O instalador seguro fica em `script/i3-starterpack-install`. Ele faz uma
+checagem completa antes de copiar arquivos e nunca substitui uma configuração
+existente sem confirmação.
 
-Os caminhos esperados são:
+### Checar sem alterar
 
-- configurações em `$HOME/.config`;
-- sintaxes do Nano em `$HOME/.nano`;
-- temas, fontes e wallpapers em `$HOME/.local/share`;
-- scripts executáveis em `$HOME/script`;
-- `.bashrc`, `.profile`, `.nanorc` e `.face` diretamente em `$HOME`.
+```bash
+curl -fsSL https://raw.githubusercontent.com/marcelositr/i3-starterpack/master/script/i3-starterpack-install | bash -s -- --dry-run
+```
 
-Depois de instalar as fontes, atualize o cache com `fc-cache -fv` e ajuste em
-`.config/i3status/config` a interface Wi-Fi e o sensor térmico da máquina.
+O `--dry-run` verifica o sistema, dependências, espaço disponível e compara os
+arquivos do starterpack com o conteúdo atual do `$HOME`. Nenhuma alteração é
+realizada.
+
+### Instalar
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/marcelositr/i3-starterpack/master/script/i3-starterpack-install | bash -s -- --run
+```
+
+O `--run` repete toda a checagem. Se houver conflitos, mostra os caminhos que
+serão substituídos e pede confirmação. Somente depois da confirmação ele
+instala dependências ausentes, cria um backup dos arquivos conflitantes e
+aplica o starterpack. Arquivos de outros programas que já estejam em
+`~/.config` ou `~/.local/share` são preservados.
+
+Os backups ficam em:
+
+```text
+~/.local/share/i3-starterpack/backups/
+```
+
+Para usar a partir de um checkout local:
+
+```bash
+./script/i3-starterpack-install --dry-run
+./script/i3-starterpack-install --run
+```
+
+Não execute o instalador com `sudo`. Quando forem necessários pacotes do
+sistema, o próprio instalador chama `sudo` apenas para o `apt-get`.
+
+Depois da instalação, ajuste em `.config/i3status/config` a interface Wi-Fi e
+o sensor térmico da máquina quando necessário.
 
 ## GPG
 

@@ -72,3 +72,29 @@ e os componentes externos estão documentados em
 ![desktop](preview/01.png)
 ![terminal](preview/02.png)
 ![launcher](preview/03.png)
+
+## Créditos e componentes de terceiros
+
+Este repositório reúne configurações pessoais com componentes e trabalhos de
+terceiros que continuam pertencendo aos respectivos autores e projetos:
+
+- **i3 Starterpack** — baseado no trabalho de
+  [addy-dclxvi/i3-starterpack](https://github.com/addy-dclxvi/i3-starterpack);
+- **Nordic GTK Theme** — tema de **Eliver Lara**,
+  [EliverLara/Nordic](https://github.com/EliverLara/Nordic);
+- **Nordic para Kvantum** — variante usada para aplicações Qt, baseada no
+  visual Nordic de **Eliver Lara**;
+- **Nerd Fonts / Symbols Only** — projeto
+  [ryanoasis/nerd-fonts](https://github.com/ryanoasis/nerd-fonts), com os
+  Symbols Nerd Font incluídos neste repositório;
+- **Improved Nano Syntax Highlighting** — arquivos derivados de
+  [scopatz/nanorc](https://github.com/scopatz/nanorc);
+- **Papirus Icon Theme** — usado como dependência externa e instalado pelo
+  gerenciador de pacotes, projeto
+  [PapirusDevelopmentTeam/papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme);
+- **IBM Plex** — família tipográfica utilizada pelo ambiente e instalada pelo
+  pacote `fonts-ibm-plex` do Debian.
+
+Licenças e observações adicionais dos componentes redistribuídos estão em
+[THIRD_PARTY.md](THIRD_PARTY.md) e nos arquivos `LICENSE` mantidos junto aos
+respectivos componentes.
